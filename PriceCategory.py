@@ -12,26 +12,16 @@ end_url = categories[sys.argv[1]]
 browser = webdriver.Firefox()
 browser.get('http://poe.ninja/challenge/' + end_url)
 
-path = //*[contains(text(),'Show all')]
+path = "//*[contains(text(),'Show all')]"
 
 browser.find_element_by_xpath(path).click()
 
 rows = browser.find_elements_by_tag_name('tr')
-del row[0]
+del rows[0]
 
-for row in rows
-    #here is a good place to parse each row and only print out the name and price in chaos
-    #probably the easiest way to do this is to split by space and grab all text prior to "wiki"
-    # to grab price either count back spaces in the split or find the span without style in the class "text-right" 
-    print(row.text)
-    parts = row.split(' ')
-    index = -1
-    price_index = -1
-    for idx, part in enumerate(parts):
-        if part.lower() == 'wiki':
-    	    index = idx
-        elif part.lower() == 'x' and idx == (len(parts) - 1):
-            price_index = idx - 1
-        item_name = ' '.join(parts[0:index])
-        price = parts[price_index]
-        print(item_name + price)
+for row in rows:
+    parts = row.text.splitlines()
+    item_name = parts[0]
+    chaos_price_index = len(parts)-2
+    print(parts[0] + ':' + parts[chaos_price_index])
+browser.close()
